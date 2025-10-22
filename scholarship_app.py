@@ -9,6 +9,8 @@ from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 import seaborn as sns
+import joblib
+
 
 # ---------------- Load Dataset ----------------
 @st.cache_data
@@ -52,6 +54,14 @@ trained_models = {}
 for name, m in models.items():
     m.fit(X_train, y_train)
     trained_models[name] = m
+# Save trained models
+for name, model in trained_models.items():
+    filename = f"{name.replace(' ', '_')}_model.pkl"
+    joblib.dump(model, filename)
+
+# Save the scaler
+joblib.dump(scaler, "scaler.pkl")
+
 
 # ---------------- Dummy Areas ----------------
 dummy_areas = {
@@ -111,3 +121,4 @@ if st.checkbox("Show Model Performance"):
         res.append({"Model": name, "RMSE": round(rmse,2), "R²": round(r2,2)})
     st.subheader("Model Performance")
     st.table(pd.DataFrame(res))
+
